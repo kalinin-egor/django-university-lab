@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -66,3 +67,20 @@ class Rental(models.Model):
     def clean(self) -> None:
         if self.end_date < self.start_date:
             raise ValidationError('End date cannot be earlier than start date.')
+
+
+class ekexam(models.Model):
+    name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    exam_date = models.DateField()
+    task_image = models.ImageField(upload_to='exam_tasks/')
+    participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='ek_exams', blank=True)
+    is_public = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-exam_date', '-created_at']
+        verbose_name = 'exam'
+        verbose_name_plural = 'exams'
+
+    def __str__(self) -> str:
+        return self.name

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Экзамены — {{ student_name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        h1 { margin-bottom: 1.5rem; }
+        .exam-card { border: 1px solid #ccc; border-radius: 8px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; }
+        .exam-card h2 { margin-top: 0; }
+        figure { margin: 1rem 0; }
+        img { max-width: 100%; height: auto; display: block; }
+    </style>
+</head>
+<body>
+    <h1>{{ student_name }} — группа {{ student_group }}</h1>
+
+    {% for exam in exams %}
+        <section class="exam-card">
+            <h2>{{ exam.name }}</h2>
+            <p><strong>Дата создания записи:</strong> {{ exam.created_at|date:"d.m.Y H:i" }}</p>
+            <p><strong>Дата проведения экзамена:</strong> {{ exam.exam_date|date:"d.m.Y" }}</p>
+            <p><strong>Опубликовано:</strong> {{ exam.is_public|yesno:"Да,Нет" }}</p>
+            <div>
+                <strong>Участники:</strong>
+                {% if exam.participants.count %}
+                    <ul>
+                        {% for user in exam.participants.all %}
+                            <li>{{ user.get_full_name|default:user.username }} ({{ user.email }})</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <span>Пока никого не назначено.</span>
+                {% endif %}
+            </div>
+            {% if exam.task_image %}
+                <figure>
+                    <figcaption>Задание к экзамену</figcaption>
+                    <img src="{{ exam.task_image.url }}" alt="Задание к экзамену {{ exam.name }}">
+                </figure>
+            {% endif %}
+        </section>
+    {% empty %}
+        <p>Опубликованных экзаменов нет.</p>
+    {% endfor %}
+</body>
+</html>

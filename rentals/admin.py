@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Car, Client, ExtraService, Rental
+from .models import Car, Client, ExtraService, Rental, ekexam
 
 
 @admin.register(Car)
@@ -28,3 +28,15 @@ class RentalAdmin(admin.ModelAdmin):
     list_filter = ('status', 'start_date', 'end_date')
     search_fields = ('car__brand', 'car__model', 'client__full_name')
     filter_horizontal = ('extra_services',)
+
+
+@admin.register(ekexam)
+class EkExamAdmin(admin.ModelAdmin):
+    list_display = ('name', 'exam_date', 'created_at', 'is_public')
+    search_fields = ('name', 'participants__email')
+    list_filter = (
+        'is_public',
+        ('created_at', admin.DateFieldListFilter),
+        ('exam_date', admin.DateFieldListFilter),
+    )
+    filter_horizontal = ('participants',)
